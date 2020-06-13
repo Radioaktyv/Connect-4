@@ -4,26 +4,15 @@ ROW_COUNT = 7
 COLUMN_COUNT = 7
 MAX_RIGHT: int = 535
 MAX_LEFT: int = 85
-Array = numpy.zeros([ROW_COUNT, COLUMN_COUNT])
-print(Array)
+
 pygame.init()
-Ccenterx = 85
-Ccentery = 85
-screen = pygame.display.set_mode((620, 620))
-Board = pygame.Rect(50, 50, 520, 520)
-ChoiceBackground = pygame.Rect(50, 50, 520, 70)
-rysx = 10
-rysy = 10
-turn = -1
-game_over = False
-xpos = 0
-myfont = pygame.font.SysFont("monospace", 50)
+
 class Colors:
     BLUE = (0, 0, 255)
     BLACK = (0, 0, 0)
     RED = (255, 0, 0)
     YELLOW = (255, 255, 0)
-def Draw(rysx, rysy):
+def Draw(rysx, rysy,screen,Board,ChoiceBackground,Array):
     pygame.draw.rect(screen, Colors.BLUE, Board)
     pygame.draw.rect(screen, (0, 150, 255), ChoiceBackground)
     for x in range(0, COLUMN_COUNT):
@@ -34,11 +23,11 @@ def Draw(rysx, rysy):
             if Array[x][y] == 0:
                 pygame.draw.circle(screen, Colors.BLACK, (rysx, rysy), 35)
             else:
-                Krazek(rysx, rysy, Array[x][y])
+                Chip(rysx, rysy, Array[x][y],screen)
             # pygame.draw.circle(screen, BLACK, (rysx, rysy), 35)
 
 
-def Krazek(Ccenterx, Ccentery, turn):
+def Chip(Ccenterx, Ccentery, turn, screen):
     if turn == -1:
         pygame.draw.circle(screen, Colors.RED, (Ccenterx, Ccentery), 35)
     elif turn == 1:
@@ -54,16 +43,16 @@ def Make_A_Move(Array, turn, xpos):
         if Array[xpos][ypos] == 0:
             Array[xpos][ypos] = turn
             flag = False
-    nextTurn(turn)
+    next_turn(turn)
 
 
-def nextTurn(turn):
+def next_turn(turn):
     if turn == -1:
         turn += 2
     else:
         turn -= 2
     return turn
-def check(Array, xpos, turn):
+def check(Array, xpos, turn, myfont, screen):
     if Array[xpos][1] == 0:
         return True
     if Array[xpos][1] != 0:
@@ -102,53 +91,66 @@ def winning_move(Array, turn):
                         Array[r - 3][c + 3] == turn:
                     return True
 
+def main():
+    Ccenterx = 85
+    Ccentery = 85
+    screen = pygame.display.set_mode((620, 620))
+    Board = pygame.Rect(50, 50, 520, 520)
+    ChoiceBackground = pygame.Rect(50, 50, 520, 70)
+    rysx = 10
+    rysy = 10
+    turn = -1
+    game_over = False
+    xpos = 0
+    myfont = pygame.font.SysFont("monospace", 50)
+    Array = numpy.zeros([ROW_COUNT, COLUMN_COUNT])
+    print(Array)
+    while not game_over:
+        screen.fill((0, 0, 123))
+        # Handle Events
 
-while not game_over:
-    screen.fill((0, 0, 123))
-    # Handle Events
-
-    for event in pygame.event.get():
-        # Closing game
-        if event.type == pygame.QUIT:
-            sys.exit(0)
-        # Right movement
-        elif event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
-            if Ccenterx == MAX_RIGHT:
-                Ccenterx = MAX_LEFT
-                xpos = 0
-            else:
-                Ccenterx += 75
-                xpos += 1
-        # Left movement
-        elif event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
-            if Ccenterx == MAX_LEFT:
-                Ccenterx = MAX_RIGHT
-                xpos = 6
-            else:
-                Ccenterx -= 75
-                xpos -= 1
-        # Making a move
-        elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-            if check(Array, xpos, turn):
-                Make_A_Move(Array, turn, xpos)
-            else:
-                turn = turn * (-1)
-            if not winning_move(Array, turn):
-                turn = nextTurn(turn)
-            else:
-                if turn == -1:
-                    label = myfont.render("Player Red wins!!", 1, Colors.RED)
+        for event in pygame.event.get():
+            # Closing game
+            if event.type == pygame.QUIT:
+                sys.exit(0)
+            # Right movement
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
+                if Ccenterx == MAX_RIGHT:
+                    Ccenterx = MAX_LEFT
+                    xpos = 0
                 else:
-                    label = myfont.render("Player Yellow wins!!", 1, Colors.YELLOW)
-                screen.blit(label, (310 - label.get_width() // 2, 310 - label.get_height() // 2))
-                game_over = True
-                pygame.display.flip()
-                pygame.time.wait(3000)
+                    Ccenterx += 75
+                    xpos += 1
+            # Left movement
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
+                if Ccenterx == MAX_LEFT:
+                    Ccenterx = MAX_RIGHT
+                    xpos = 6
+                else:
+                    Ccenterx -= 75
+                    xpos -= 1
+            # Making a move
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                if check(Array, xpos, turn,myfont,screen):
+                    Make_A_Move(Array, turn, xpos)
+                else:
+                    turn = turn * (-1)
+                if not winning_move(Array, turn):
+                    turn = next_turn(turn)
+                else:
+                    if turn == -1:
+                        label = myfont.render("Player Red wins!!", 1, Colors.RED)
+                    else:
+                        label = myfont.render("Player Yellow wins!!", 1, Colors.YELLOW)
+                    screen.blit(label, (310 - label.get_width() // 2, 310 - label.get_height() // 2))
+                    game_over = True
+                    pygame.display.flip()
+                    pygame.time.wait(3000)
 
-        # drawing
-        Draw(rysx, rysy)
-        Krazek(Ccenterx, Ccentery, turn)
-        pygame.display.flip()
-        if game_over:
-            pygame.time.wait(2000)
-
+            # drawing
+            Draw(rysx, rysy, screen, Board, ChoiceBackground, Array)
+            Chip(Ccenterx, Ccentery, turn,screen)
+            pygame.display.flip()
+            if game_over:
+                pygame.time.wait(2000)
+main()
