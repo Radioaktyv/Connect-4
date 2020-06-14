@@ -10,7 +10,8 @@ SCREEN_SIZE = 620
 BOARD_SIZE = 520
 MOVEMENT_DISTANCE = 75
 CHIP_DIAMETER = 35
-
+BOARD_POS = 50
+CHOICE_BACKGROUND_WIDTH = 70
 
 class Colors:
     BLUE = (0, 0, 255)
@@ -21,40 +22,44 @@ class Colors:
     CHOICE_BACKGROUND = (0, 150, 255)
 
 
-def draw(rysx, rysy, screen, Board, ChoiceBackground, Array):
-    pygame.draw.rect(screen, Colors.BLUE, Board)
-    pygame.draw.rect(screen, Colors.CHOICE_BACKGROUND, ChoiceBackground)
+def draw(position_x_draw, position_y_draw, screen, board, choice_background, array):
+    """It draws board and chips"""
+    pygame.draw.rect(screen, Colors.BLUE, board)
+    pygame.draw.rect(screen, Colors.CHOICE_BACKGROUND, choice_background)
     for x in range(0, COLUMN_COUNT):
-        rysx += MOVEMENT_DISTANCE
-        rysy = 10
+        position_x_draw += MOVEMENT_DISTANCE
+        position_y_draw = 10
         for y in range(0, ROW_COUNT):
-            rysy += MOVEMENT_DISTANCE
-            if Array[x][y] == 0:
-                pygame.draw.circle(screen, Colors.BLACK, (rysx, rysy), CHIP_DIAMETER)
+            position_y_draw += MOVEMENT_DISTANCE
+            if array[x][y] == 0:
+                pygame.draw.circle(screen, Colors.BLACK, (position_x_draw, position_y_draw), CHIP_DIAMETER)
             else:
-                chip(rysx, rysy, Array[x][y], screen)
+                chip(position_x_draw, position_y_draw, array[x][y], screen)
 
 
-def chip(Ccenterx, Ccentery, turn, screen):
+def chip(centerx, centery, turn, screen):
+    """It decides which chip should be drawn and also it draws  it on given position"""
     if turn == -1:
-        pygame.draw.circle(screen, Colors.RED, (Ccenterx, Ccentery), CHIP_DIAMETER)
+        pygame.draw.circle(screen, Colors.RED, (centerx, centery), CHIP_DIAMETER)
     elif turn == 1:
-        pygame.draw.circle(screen, Colors.YELLOW, (Ccenterx, Ccentery), CHIP_DIAMETER)
+        pygame.draw.circle(screen, Colors.YELLOW, (centerx, centery), CHIP_DIAMETER)
 
 
-def make_a_move(Array, turn, xpos):
+def make_a_move(array, turn, x_array_position):
+    """Checks if a position is taken and if so it gives your chip one above if possible"""
     flag = True
     for y in range(COLUMN_COUNT - 1, 0, -1):
         if not flag:
             break
-        ypos = y
-        if Array[xpos][ypos] == 0:
-            Array[xpos][ypos] = turn
+        y_array_position = y
+        if array[x_array_position][y_array_position] == 0:
+            array[x_array_position][y_array_position] = turn
             flag = False
     next_turn(turn)
 
 
 def next_turn(turn):
+    """It switches turns"""
     if turn == -1:
         turn += 2
     else:
@@ -62,51 +67,55 @@ def next_turn(turn):
     return turn
 
 
-def check(Array, xpos, turn, myfont, screen):
-    if Array[xpos][1] == 0:
+def check(array, x_array_position, my_font, screen):
+    """Checks if move is forbidden"""
+    if array[x_array_position][1] == 0:
         return True
-    if Array[xpos][1] != 0:
-        label = myfont.render("Forbidden Move", 1, Colors.YELLOW)
+    if array[x_array_position][1] != 0:
+        label = my_font.render("Forbidden Move", 1, Colors.YELLOW)
         screen.blit(label, (SCREEN_SIZE // 2 - label.get_width() // 2, SCREEN_SIZE // 2 - label.get_height() // 2))
         pygame.display.flip()
         pygame.time.wait(1000)
         return False
 
 
-def winning_move(Array, turn):
-    # Check horizontal locations for win
+def winning_move(array, turn):
+    """Checks if someone already won"""
+    #Check horizontal locations for win
     for c in range(COLUMN_COUNT - 3):
         for r in range(ROW_COUNT):
-            if Array[r][c] == turn and Array[r][c + 1] == turn and Array[r][c + 2] == turn and Array[r][c + 3] == turn:
+            if array[r][c] == turn and array[r][c + 1] == turn and array[r][c + 2] == turn and array[r][c + 3] == turn:
                 return True
 
-    # Check vertical locations for win
+    #Check vertical locations for win
     for c in range(COLUMN_COUNT):
         for r in range(ROW_COUNT - 3):
-            if Array[r][c] == turn and Array[r + 1][c] == turn and Array[r + 2][c] == turn and Array[r + 3][c] == turn:
+            if array[r][c] == turn and array[r + 1][c] == turn and array[r + 2][c] == turn and array[r + 3][c] == turn:
                 return True
 
-    # Check positively sloped diaganols
+    # Check positively sloped diagonal
     for c in range(COLUMN_COUNT - 3):
         if c + 3 != 0:
             for r in range(ROW_COUNT - 3):
-                if Array[r][c] == turn and Array[r + 1][c + 1] == turn and Array[r + 2][c + 2] == turn and \
-                        Array[r + 3][c + 3] == turn:
+                if array[r][c] == turn and array[r + 1][c + 1] == turn and array[r + 2][c + 2] == turn and \
+                        array[r + 3][c + 3] == turn:
                     return True
 
-    # Check negatively sloped diaganols
+    # Check negatively sloped diagonal
     for c in range(COLUMN_COUNT - 3):
         if c + 3 != 0:
             for r in range(3, ROW_COUNT):
-                if Array[r][c] == turn and Array[r - 1][c + 1] == turn and Array[r - 2][c + 2] == turn and \
-                        Array[r - 3][c + 3] == turn:
+                if array[r][c] == turn and array[r - 1][c + 1] == turn and array[r - 2][c + 2] == turn and \
+                        array[r - 3][c + 3] == turn:
                     return True
 
-def checkdraw(tablica):
+
+def check_draw(array):
+    """Checks if there is draw on a board and there are no free moves left"""
     flag = 0
     for x in range(0, COLUMN_COUNT):
         for y in range(1, ROW_COUNT):
-            if tablica[x][y] == 0:
+            if array[x][y] == 0:
                 flag = 1
     if flag == 0:
         return False
@@ -114,26 +123,25 @@ def checkdraw(tablica):
         return True
 
 
-
-
 def main():
+    """Main function"""
     pygame.init()
     centerx = 85
     centery = 85
     screen = pygame.display.set_mode((SCREEN_SIZE, SCREEN_SIZE))
-    board = pygame.Rect(50, 50, BOARD_SIZE, BOARD_SIZE)
-    choicebackground = pygame.Rect(50, 50, BOARD_SIZE, 70)
-    rysx = 10
-    rysy = 10
+    board = pygame.Rect(BOARD_POS, BOARD_POS, BOARD_SIZE, BOARD_SIZE)
+    choice_background = pygame.Rect(BOARD_POS, BOARD_POS, BOARD_SIZE, CHOICE_BACKGROUND_WIDTH)
+    position_x_draw = 10
+    position_y_draw = 10
     turn = -1
     game_over = False
-    xpos = 0
-    myfont = pygame.font.SysFont("monospace", 50)
+    x_array_position = 0
+    my_font = pygame.font.SysFont("monospace", 50)
     array = numpy.zeros([ROW_COUNT, COLUMN_COUNT])
     print(array)
     while not game_over:
         screen.fill(Colors.BACKGROUND)
-        """Handle Events"""
+        #Handle Events
 
         for event in pygame.event.get():
             # Closing game
@@ -143,33 +151,34 @@ def main():
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
                 if centerx == MAX_RIGHT:
                     centerx = MAX_LEFT
-                    xpos = 0
+                    x_array_position = 0
                 else:
                     centerx += MOVEMENT_DISTANCE
-                    xpos += 1
+                    x_array_position += 1
             # Left movement
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
                 if centerx == MAX_LEFT:
                     centerx = MAX_RIGHT
-                    xpos = 6
+                    x_array_position = 6
                 else:
                     centerx -= MOVEMENT_DISTANCE
-                    xpos -= 1
+                    x_array_position -= 1
             # Making a move
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                if check(array, xpos, turn, myfont, screen):
-                    make_a_move(array, turn, xpos)
+                if check(array, x_array_position, my_font, screen):
+                    make_a_move(array, turn, x_array_position)
+                    print(array)
                 else:
                     turn = turn * (-1)
-                if not winning_move(array, turn) and checkdraw(array):
+                if not winning_move(array, turn) and check_draw(array):
                     turn = next_turn(turn)
                 else:
-                    if not checkdraw(array):
-                        label = myfont.render("DRAW", 1, Colors.YELLOW)
+                    if not check_draw(array):
+                        label = my_font.render("DRAW", 1, Colors.YELLOW)
                     elif turn == -1:
-                        label = myfont.render("Player Red wins!!", 1, Colors.RED)
+                        label = my_font.render("Player Red wins!!", 1, Colors.RED)
                     else:
-                        label = myfont.render("Player Yellow wins!!", 1, Colors.YELLOW)
+                        label = my_font.render("Player Yellow wins!!", 1, Colors.YELLOW)
                     screen.blit(label, (SCREEN_SIZE // 2 - label.get_width() // 2, SCREEN_SIZE // 2 - label.get_height() // 2))
                     game_over = True
                     pygame.display.flip()
@@ -179,7 +188,7 @@ def main():
 
 
             # drawing
-            draw(rysx, rysy, screen, board, choicebackground, array)
+            draw(position_x_draw, position_y_draw, screen, board, choice_background, array)
             chip(centerx, centery, turn, screen)
             pygame.display.flip()
             if game_over:
