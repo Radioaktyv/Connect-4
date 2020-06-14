@@ -1,4 +1,6 @@
-import pygame, sys, numpy
+import pygame
+import sys
+import numpy
 
 ROW_COUNT = 7
 COLUMN_COUNT = 7
@@ -7,7 +9,8 @@ MAX_LEFT: int = 85
 SCREEN_SIZE = 620
 BOARD_SIZE = 520
 MOVEMENT_DISTANCE = 75
-pygame.init()
+CHIP_DIAMETER = 35
+
 
 class Colors:
     BLUE = (0, 0, 255)
@@ -15,31 +18,33 @@ class Colors:
     RED = (255, 0, 0)
     YELLOW = (255, 255, 0)
     BACKGROUND = (0, 0, 123)
-def Draw(rysx, rysy,screen,Board,ChoiceBackground,Array):
+    CHOICE_BACKGROUND = (0, 150, 255)
+
+
+def draw(rysx, rysy, screen, Board, ChoiceBackground, Array):
     pygame.draw.rect(screen, Colors.BLUE, Board)
-    pygame.draw.rect(screen, (0, 150, 255), ChoiceBackground)
+    pygame.draw.rect(screen, Colors.CHOICE_BACKGROUND, ChoiceBackground)
     for x in range(0, COLUMN_COUNT):
         rysx += MOVEMENT_DISTANCE
         rysy = 10
         for y in range(0, ROW_COUNT):
-            rysy += 75
+            rysy += MOVEMENT_DISTANCE
             if Array[x][y] == 0:
-                pygame.draw.circle(screen, Colors.BLACK, (rysx, rysy), 35)
+                pygame.draw.circle(screen, Colors.BLACK, (rysx, rysy), CHIP_DIAMETER)
             else:
-                Chip(rysx, rysy, Array[x][y],screen)
-            # pygame.draw.circle(screen, BLACK, (rysx, rysy), 35)
+                chip(rysx, rysy, Array[x][y], screen)
 
 
-def Chip(Ccenterx, Ccentery, turn, screen):
+def chip(Ccenterx, Ccentery, turn, screen):
     if turn == -1:
-        pygame.draw.circle(screen, Colors.RED, (Ccenterx, Ccentery), 35)
+        pygame.draw.circle(screen, Colors.RED, (Ccenterx, Ccentery), CHIP_DIAMETER)
     elif turn == 1:
-        pygame.draw.circle(screen, Colors.YELLOW, (Ccenterx, Ccentery), 35)
+        pygame.draw.circle(screen, Colors.YELLOW, (Ccenterx, Ccentery), CHIP_DIAMETER)
 
 
-def Make_A_Move(Array, turn, xpos):
+def make_a_move(Array, turn, xpos):
     flag = True
-    for y in range(6, 0, -1):
+    for y in range(COLUMN_COUNT - 1, 0, -1):
         if not flag:
             break
         ypos = y
@@ -55,6 +60,8 @@ def next_turn(turn):
     else:
         turn -= 2
     return turn
+
+
 def check(Array, xpos, turn, myfont, screen):
     if Array[xpos][1] == 0:
         return True
@@ -64,6 +71,7 @@ def check(Array, xpos, turn, myfont, screen):
         pygame.display.flip()
         pygame.time.wait(1000)
         return False
+
 
 def winning_move(Array, turn):
     # Check horizontal locations for win
@@ -94,23 +102,38 @@ def winning_move(Array, turn):
                         Array[r - 3][c + 3] == turn:
                     return True
 
+def checkdraw(tablica):
+    flag = 0
+    for x in range(0, COLUMN_COUNT):
+        for y in range(1, ROW_COUNT):
+            if tablica[x][y] == 0:
+                flag = 1
+    if flag == 0:
+        return False
+    else:
+        return True
+
+
+
+
 def main():
-    Ccenterx = 85
-    Ccentery = 85
+    pygame.init()
+    centerx = 85
+    centery = 85
     screen = pygame.display.set_mode((SCREEN_SIZE, SCREEN_SIZE))
-    Board = pygame.Rect(50, 50, BOARD_SIZE, BOARD_SIZE)
-    ChoiceBackground = pygame.Rect(50, 50, BOARD_SIZE, 70)
+    board = pygame.Rect(50, 50, BOARD_SIZE, BOARD_SIZE)
+    choicebackground = pygame.Rect(50, 50, BOARD_SIZE, 70)
     rysx = 10
     rysy = 10
     turn = -1
     game_over = False
     xpos = 0
     myfont = pygame.font.SysFont("monospace", 50)
-    Array = numpy.zeros([ROW_COUNT, COLUMN_COUNT])
-    print(Array)
+    array = numpy.zeros([ROW_COUNT, COLUMN_COUNT])
+    print(array)
     while not game_over:
         screen.fill(Colors.BACKGROUND)
-        # Handle Events
+        """Handle Events"""
 
         for event in pygame.event.get():
             # Closing game
@@ -118,30 +141,32 @@ def main():
                 sys.exit(0)
             # Right movement
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
-                if Ccenterx == MAX_RIGHT:
-                    Ccenterx = MAX_LEFT
+                if centerx == MAX_RIGHT:
+                    centerx = MAX_LEFT
                     xpos = 0
                 else:
-                    Ccenterx += MOVEMENT_DISTANCE
+                    centerx += MOVEMENT_DISTANCE
                     xpos += 1
             # Left movement
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
-                if Ccenterx == MAX_LEFT:
-                    Ccenterx = MAX_RIGHT
+                if centerx == MAX_LEFT:
+                    centerx = MAX_RIGHT
                     xpos = 6
                 else:
-                    Ccenterx -= MOVEMENT_DISTANCE
+                    centerx -= MOVEMENT_DISTANCE
                     xpos -= 1
             # Making a move
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                if check(Array, xpos, turn,myfont,screen):
-                    Make_A_Move(Array, turn, xpos)
+                if check(array, xpos, turn, myfont, screen):
+                    make_a_move(array, turn, xpos)
                 else:
                     turn = turn * (-1)
-                if not winning_move(Array, turn):
+                if not winning_move(array, turn) and checkdraw(array):
                     turn = next_turn(turn)
                 else:
-                    if turn == -1:
+                    if not checkdraw(array):
+                        label = myfont.render("DRAW", 1, Colors.YELLOW)
+                    elif turn == -1:
                         label = myfont.render("Player Red wins!!", 1, Colors.RED)
                     else:
                         label = myfont.render("Player Yellow wins!!", 1, Colors.YELLOW)
@@ -150,10 +175,16 @@ def main():
                     pygame.display.flip()
                     pygame.time.wait(3000)
 
+
+
+
             # drawing
-            Draw(rysx, rysy, screen, Board, ChoiceBackground, Array)
-            Chip(Ccenterx, Ccentery, turn,screen)
+            draw(rysx, rysy, screen, board, choicebackground, array)
+            chip(centerx, centery, turn, screen)
             pygame.display.flip()
             if game_over:
                 pygame.time.wait(2000)
-main()
+
+
+if __name__ == '__main__':
+    main()
