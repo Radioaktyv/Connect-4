@@ -4,7 +4,9 @@ ROW_COUNT = 7
 COLUMN_COUNT = 7
 MAX_RIGHT: int = 535
 MAX_LEFT: int = 85
-
+SCREEN_SIZE = 620
+BOARD_SIZE = 520
+MOVEMENT_DISTANCE = 75
 pygame.init()
 
 class Colors:
@@ -12,11 +14,12 @@ class Colors:
     BLACK = (0, 0, 0)
     RED = (255, 0, 0)
     YELLOW = (255, 255, 0)
+    BACKGROUND = (0, 0, 123)
 def Draw(rysx, rysy,screen,Board,ChoiceBackground,Array):
     pygame.draw.rect(screen, Colors.BLUE, Board)
     pygame.draw.rect(screen, (0, 150, 255), ChoiceBackground)
     for x in range(0, COLUMN_COUNT):
-        rysx += 75
+        rysx += MOVEMENT_DISTANCE
         rysy = 10
         for y in range(0, ROW_COUNT):
             rysy += 75
@@ -57,7 +60,7 @@ def check(Array, xpos, turn, myfont, screen):
         return True
     if Array[xpos][1] != 0:
         label = myfont.render("Forbidden Move", 1, Colors.YELLOW)
-        screen.blit(label, (310 - label.get_width() // 2, 310 - label.get_height() // 2))
+        screen.blit(label, (SCREEN_SIZE // 2 - label.get_width() // 2, SCREEN_SIZE // 2 - label.get_height() // 2))
         pygame.display.flip()
         pygame.time.wait(1000)
         return False
@@ -94,9 +97,9 @@ def winning_move(Array, turn):
 def main():
     Ccenterx = 85
     Ccentery = 85
-    screen = pygame.display.set_mode((620, 620))
-    Board = pygame.Rect(50, 50, 520, 520)
-    ChoiceBackground = pygame.Rect(50, 50, 520, 70)
+    screen = pygame.display.set_mode((SCREEN_SIZE, SCREEN_SIZE))
+    Board = pygame.Rect(50, 50, BOARD_SIZE, BOARD_SIZE)
+    ChoiceBackground = pygame.Rect(50, 50, BOARD_SIZE, 70)
     rysx = 10
     rysy = 10
     turn = -1
@@ -106,7 +109,7 @@ def main():
     Array = numpy.zeros([ROW_COUNT, COLUMN_COUNT])
     print(Array)
     while not game_over:
-        screen.fill((0, 0, 123))
+        screen.fill(Colors.BACKGROUND)
         # Handle Events
 
         for event in pygame.event.get():
@@ -119,7 +122,7 @@ def main():
                     Ccenterx = MAX_LEFT
                     xpos = 0
                 else:
-                    Ccenterx += 75
+                    Ccenterx += MOVEMENT_DISTANCE
                     xpos += 1
             # Left movement
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
@@ -127,7 +130,7 @@ def main():
                     Ccenterx = MAX_RIGHT
                     xpos = 6
                 else:
-                    Ccenterx -= 75
+                    Ccenterx -= MOVEMENT_DISTANCE
                     xpos -= 1
             # Making a move
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
@@ -142,7 +145,7 @@ def main():
                         label = myfont.render("Player Red wins!!", 1, Colors.RED)
                     else:
                         label = myfont.render("Player Yellow wins!!", 1, Colors.YELLOW)
-                    screen.blit(label, (310 - label.get_width() // 2, 310 - label.get_height() // 2))
+                    screen.blit(label, (SCREEN_SIZE // 2 - label.get_width() // 2, SCREEN_SIZE // 2 - label.get_height() // 2))
                     game_over = True
                     pygame.display.flip()
                     pygame.time.wait(3000)
