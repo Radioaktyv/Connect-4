@@ -27,6 +27,12 @@ jego wygranej.
 4. Ułożenie skośnej linii przez dowolnego gracza - oczekiwana informacja o
 jego wygranej.
 5. Zapełnienie pola gry tak, że żaden gracz nie ułożył linii - oczekiwana informacja
+6. Ułożenie linii dłuższej niż 4 przez jednego z graczy - oczekiwana informacja o
+jego wygranej.
+[c][c][c][ ][c][c][c]
+[ż][ż][ż][ ][ż][ż][ż] <- w następnym ruchu gracz żółty wrzuci monetę w
+środkową kolumnę.
+7. Próba wrzucenia monety do zapełnionej kolumny - oczekiwana informacja o błędzie
 o remisie.
 
 ## Author
