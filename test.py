@@ -1,27 +1,6 @@
 import main
 import unittest
 import numpy
-class TestColors(unittest.TestCase):
-    def setUp(self):
-        self.color = main.Colors()
-
-    def test_BLACK(self):
-        self.assertEqual(self.color.BLACK, (0, 0, 0))
-
-    def test_BLUE(self):
-        self.assertEqual(self.color.BLUE, (0, 0, 255))
-
-    def test_RED(self):
-        self.assertEqual(self.color.RED, (255, 0, 0))
-
-    def test_YELLOW(self):
-        self.assertEqual(self.color.YELLOW, (255, 255, 0))
-
-    def test_BACKGROUND(self):
-        self.assertEqual(self.color.BACKGROUND, (0, 0, 123))
-
-    def test_CHOICE_BACKGROUND(self):
-        self.assertEqual(self.color.CHOICE_BACKGROUND, (0, 150, 255))
 
 
 class test_functions(unittest.TestCase):
@@ -50,7 +29,7 @@ class test_functions(unittest.TestCase):
                          [ 0,  0,  0,  0,  0,  0,  0],
                          [ 0,  0,  0,  0, 0,  0,  0]]
 
-         self.assertEqual(main.winning_move(test_array, 1), True)
+         self.assertTrue(main.winning_move(test_array, 1))
      def test_check_draw(self):
          test_array =  [[ 0,  1, -1,  1, -1,  1, -1],
                         [ 0,  1, -1,  1, -1,  1, -1],
@@ -59,6 +38,6 @@ class test_functions(unittest.TestCase):
                         [ 0,  1, -1,  1, -1,  1, -1],
                         [ 0,  1, -1,  1, -1,  1, -1],
                         [ 0,  1, -1,  1, -1,  1, -1]]
-         self.assertEqual(main.check_draw(test_array), False)
+         self.assertFalse(main.check_draw(test_array))
 if __name__ == '__main__':
     unittest.main()
