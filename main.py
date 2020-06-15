@@ -26,15 +26,16 @@ def draw(position_x_draw, position_y_draw, screen, board, choice_background, arr
     """It draws board and chips"""
     pygame.draw.rect(screen, Colors.BLUE, board)
     pygame.draw.rect(screen, Colors.CHOICE_BACKGROUND, choice_background)
-    for x in range(0, COLUMN_COUNT):
+    for x_position in range(0, COLUMN_COUNT):
         position_x_draw += MOVEMENT_DISTANCE
         position_y_draw = 10
-        for y in range(0, ROW_COUNT):
+        for y_position in range(0, ROW_COUNT):
             position_y_draw += MOVEMENT_DISTANCE
-            if array[x][y] == 0:
-                pygame.draw.circle(screen, Colors.BLACK, (position_x_draw, position_y_draw), CHIP_DIAMETER)
+            if array[x_position][y_position] == 0:
+                pygame.draw.circle(screen, Colors.BLACK,\
+                                   (position_x_draw, position_y_draw), CHIP_DIAMETER)
             else:
-                chip(position_x_draw, position_y_draw, array[x][y], screen)
+                chip(position_x_draw, position_y_draw, array[x_position][y_position], screen)
 
 
 def chip(centerx, centery, turn, screen):
@@ -48,10 +49,10 @@ def chip(centerx, centery, turn, screen):
 def make_a_move(array, turn, x_array_position):
     """Checks if a position is taken and if so it gives your chip one above if possible"""
     flag = True
-    for y in range(COLUMN_COUNT - 1, 0, -1):
+    for i in range(COLUMN_COUNT - 1, 0, -1):
         if not flag:
             break
-        y_array_position = y
+        y_array_position = i
         if array[x_array_position][y_array_position] == 0:
             array[x_array_position][y_array_position] = turn
             flag = False
@@ -73,7 +74,8 @@ def check(array, x_array_position, my_font, screen):
         return True
     if array[x_array_position][1] != 0:
         label = my_font.render("Forbidden Move", 1, Colors.YELLOW)
-        screen.blit(label, (SCREEN_SIZE // 2 - label.get_width() // 2, SCREEN_SIZE // 2 - label.get_height() // 2))
+        screen.blit(label, (SCREEN_SIZE // 2 - label.get_width() // 2,
+                            SCREEN_SIZE // 2 - label.get_height() // 2))
         pygame.display.flip()
         pygame.time.wait(1000)
         return False
@@ -82,40 +84,43 @@ def check(array, x_array_position, my_font, screen):
 def winning_move(array, turn):
     """Checks if someone already won"""
     #Check horizontal locations for win
-    for c in range(COLUMN_COUNT - 3):
-        for r in range(ROW_COUNT):
-            if array[r][c] == turn and array[r][c + 1] == turn and array[r][c + 2] == turn and array[r][c + 3] == turn:
+    for i in range(COLUMN_COUNT - 3):
+        for j in range(ROW_COUNT):
+            if array[j][i] == turn and array[j][i + 1] == turn and \
+                    array[j][i + 2] == turn and array[j][i + 3] == turn:
                 return True
 
     #Check vertical locations for win
-    for c in range(COLUMN_COUNT):
-        for r in range(ROW_COUNT - 3):
-            if array[r][c] == turn and array[r + 1][c] == turn and array[r + 2][c] == turn and array[r + 3][c] == turn:
+    for i in range(COLUMN_COUNT):
+        for j in range(ROW_COUNT - 3):
+            if array[j][i] == turn and array[j + 1][i] == turn and \
+                    array[j + 2][i] == turn and array[j + 3][i] == turn:
                 return True
 
     # Check positively sloped diagonal
-    for c in range(COLUMN_COUNT - 3):
-        if c + 3 != 0:
-            for r in range(ROW_COUNT - 3):
-                if array[r][c] == turn and array[r + 1][c + 1] == turn and array[r + 2][c + 2] == turn and \
-                        array[r + 3][c + 3] == turn:
+    for i in range(COLUMN_COUNT - 3):
+        if i + 3 != 0:
+            for j in range(ROW_COUNT - 3):
+                if array[j][i] == turn and array[j + 1][i + 1] == turn and \
+                        array[j + 2][i + 2] == turn and array[j + 3][i + 3] == turn:
                     return True
 
     # Check negatively sloped diagonal
-    for c in range(COLUMN_COUNT - 3):
-        if c + 3 != 0:
-            for r in range(3, ROW_COUNT):
-                if array[r][c] == turn and array[r - 1][c + 1] == turn and array[r - 2][c + 2] == turn and \
-                        array[r - 3][c + 3] == turn:
+    for i in range(COLUMN_COUNT - 3):
+        if i + 3 != 0:
+            for j in range(3, ROW_COUNT):
+                if array[j][i] == turn and array[j - 1][i + 1] == turn and \
+                        array[j - 2][i + 2] == turn and \
+                        array[j - 3][i + 3] == turn:
                     return True
 
 
 def check_draw(array):
     """Checks if there is draw on a board and there are no free moves left"""
     flag = 0
-    for x in range(0, COLUMN_COUNT):
-        for y in range(1, ROW_COUNT):
-            if array[x][y] == 0:
+    for x_position in range(0, COLUMN_COUNT):
+        for y_position in range(1, ROW_COUNT):
+            if array[x_position][y_position] == 0:
                 flag = 1
     if flag == 0:
         return False
