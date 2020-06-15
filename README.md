@@ -12,7 +12,7 @@ Gracze na zmianę wrzucają monety do wybranych przez siebie kolumn.
 lub po skosie).  
 ○ Gdy gra się kończy, wyświetlane jest okienko z napisem “Wygrał gracz 1” lub
 “Wygrał gracz 2”, zależnie kto wygrał grę. 
-##Testy
+## Testy
 1. Wykonanie po dwa ruchy przez każdego z graczy - monety spadają na dół pola
 gry lub zatrzymują się na już wrzuconym żetonie.  
 2. Ułożenie pionowej linii monet przez jednego gracza - oczekiwana informacja o
