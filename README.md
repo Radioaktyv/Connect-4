@@ -11,12 +11,7 @@ Gracze na zmianę wrzucają monety do wybranych przez siebie kolumn.
 ○ Wygrywa gracz który pierwszy ustawi cztery monety w linii (poziomo, pionowo
 lub po skosie).  
 ○ Gdy gra się kończy, wyświetlane jest okienko z napisem “Wygrał gracz 1” lub
-“Wygrał gracz 2”, zależnie kto wygrał grę. Możliwe jest zresetowanie planszy
-bez zamykania głównego okna.  
-○ Reprezentacja reguł gry ma być realizowana poprzez hierarchię klas. Klasa
-bazowa definiuje między innymi funkcję wirtualną ktoWygral() nadpisywaną w
-klasach pochodnych. Realizowane powinny być przynajmniej dwa zestawy reguł,
-jako dwie klasy pochodne.  
+“Wygrał gracz 2”, zależnie kto wygrał grę. 
 Testy
 1. Wykonanie po dwa ruchy przez każdego z graczy - monety spadają na dół pola
 gry lub zatrzymują się na już wrzuconym żetonie.  
