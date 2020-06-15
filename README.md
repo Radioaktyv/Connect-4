@@ -6,7 +6,7 @@ Projekt został wykonany na laboratoria z języków symbolicznych.
 ## Opis Zadania
 ○ Okno wyświetlające siatkę 7 kolumn x 6 wierszy, przycisk nad każdą kolumną,
 informację “Tura gracza 1” lub “Tura gracza 2”  
-Gracze na zmianę wrzucają monety do wybranych przez siebie kolumn.
+Gracze na zmianę wrzucają monety do wybranych przez siebie kolumn.  
 ○ Gracze wybierają kolumnę klikając przycisk nad nią.  
 ○ Wygrywa gracz który pierwszy ustawi cztery monety w linii (poziomo, pionowo
 lub po skosie).  
