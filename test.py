@@ -14,9 +14,8 @@ class Test_functions(unittest.TestCase):
                       [0, 0, 0, 0, 0, 0, 0],
                       [-1, 0, 0, 0, 0, 0, 0]]
         main.make_a_move(array, -1, 0)
-        for i in range(main.ROW_COUNT):
-            for j in range(main.COLUMN_COUNT):
-                self.assertEqual(array[i][j], test_array[i][j])
+        array = array.tolist()
+        self.assertEqual(array, test_array)
 
     def test_next_turn(self):
         self.assertEqual(main.next_turn(main.PLAYER), main.AI)
@@ -52,9 +51,8 @@ class Test_functions(unittest.TestCase):
                       [0, 0, 0, 1, 0, 0, 0]]
         array = numpy.zeros([main.ROW_COUNT, main.COLUMN_COUNT])
         main.make_a_move_ai(array, 6, 3, main.AI)
-        for i in range(main.COLUMN_COUNT):
-            for j in range(main.ROW_COUNT):
-                self.assertEqual(array[i][j], test_array[i][j])
+        array = array.tolist()
+        self.assertEqual(array, test_array)
 
     def test_list_valid_locations(self):
         valid_locations = [0, 1, 2, 3, 4, 5, 6]
