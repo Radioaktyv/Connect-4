@@ -5,9 +5,6 @@ import pygame
 import random
 import sys
 
-
-
-
 ROW_COUNT = 7
 COLUMN_COUNT = 7
 MAX_RIGHT: int = 535
