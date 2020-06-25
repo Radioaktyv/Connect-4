@@ -63,10 +63,16 @@ class Test_functions(unittest.TestCase):
         result = [main.check_valid_location(test_array, i) for i in range(main.COLUMN_COUNT)]
         self.assertEqual(result, [True, True, True, True, True, True, True])
 
-    def test_check_valid_location_always_fail(self):
-        test_array = numpy.full((main.ROW_COUNT, main.COLUMN_COUNT), 1)
+    def test_check_valid_location_part_filled(self):
+        test_array = [[0, 0, 0, 0, 0, 0, 0],
+                      [0, 0, 0, 1, 1, 1, 0],
+                      [0, 0, 0, 1, 1, 1, 0],
+                      [0, 0, 0, 1, 1, 1, 0],
+                      [0, 0, 0, 1, 1, 1, 0],
+                      [0, 0, 0, 1, 1, 1, 0],
+                      [0, 0, 0, 1, 1, 1, 0]]
         result = [main.check_valid_location(test_array, i) for i in range(main.COLUMN_COUNT)]
-        self.assertEqual(result, [True, True, True, True, True, True, True])
+        self.assertEqual(result, [True, True, True, False, False, False, True])
 
 
 if __name__ == '__main__':
