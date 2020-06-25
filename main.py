@@ -1,10 +1,12 @@
 """Connect 4"""
-import sys
 import math
-import random
-
 import numpy
 import pygame
+import random
+import sys
+
+
+
 
 ROW_COUNT = 7
 COLUMN_COUNT = 7
@@ -23,12 +25,12 @@ WINDOW_LENGTH = 4
 
 
 class Colors:
-    PLAYBOARD = (0, 0, 255)
+    PLAYBOARD = (38, 139, 210)
     EMPTY_SPACE = (0, 0, 0)
-    RED_CHIP = (255, 0, 0)
-    YELLOW_CHIP = (255, 255, 0)
-    BACKGROUND = (100, 200, 123)
-    CHOICE_BACKGROUND = (12, 150, 255)
+    RED_CHIP = (220, 50, 47)
+    YELLOW_CHIP = (181, 137, 0)
+    BACKGROUND = (0, 43, 54)
+    CHOICE_BACKGROUND = (101, 123, 131)
 
 
 def draw(position_x_draw, position_y_draw, screen, board, choice_background, array):
@@ -74,7 +76,6 @@ def next_turn(turn):
         return AI
     else:
         return PLAYER
-
 
 
 def check(array, x_array_position, my_font, screen):
@@ -358,9 +359,7 @@ def main():
                     game_over = True
             array = numpy.flip(array)
 
-
         # drawing
-
         draw(position_x_draw, position_y_draw, screen, board, choice_background, array)
         chip(centerx, centery, turn, screen)
         pygame.display.flip()
