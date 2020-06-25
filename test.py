@@ -60,8 +60,13 @@ class Test_functions(unittest.TestCase):
 
     def test_check_valid_location(self):
         test_array = numpy.zeros([main.ROW_COUNT, main.COLUMN_COUNT])
-        for i in range(main.ROW_COUNT):
-            self.assertTrue(main.check_valid_location(test_array, i))
+        result = [main.check_valid_location(test_array, i) for i in range(main.COLUMN_COUNT)]
+        self.assertEqual(result, [True, True, True, True, True, True, True])
+
+    def test_check_valid_location_always_fail(self):
+        test_array = numpy.full((main.ROW_COUNT, main.COLUMN_COUNT), 1)
+        result = [main.check_valid_location(test_array, i) for i in range(main.COLUMN_COUNT)]
+        self.assertEqual(result, [True, True, True, True, True, True, True])
 
 
 if __name__ == '__main__':
