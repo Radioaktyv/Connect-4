@@ -2,8 +2,6 @@ import main
 import numpy
 import unittest
 
-
-
 class Test_functions(unittest.TestCase):
     def test_make_a_move(self):
         array = numpy.zeros([main.ROW_COUNT, main.COLUMN_COUNT])
